@@ -1,5 +1,5 @@
 library bn256g2 {
-    uint256 internal constant FIELD_ORDER = 0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47;
+    uint256 internal constant FIELD_MODULUS = 0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47;
     uint internal constant PT1XX = 0;
     uint internal constant PT1XY = 1;
     uint internal constant PT1YX = 2;
@@ -8,19 +8,19 @@ library bn256g2 {
     uint internal constant PT1ZY = 5;
     
     function _FQ2Mul(uint256 xx, uint256 xy, uint256 yx, uint256 yy) constant returns(uint256 rx, uint256 ry) {
-        (rx, ry) = ((xx * yx - xy * yy) % FIELD_ORDER, (xx * yy + xy * yx) % FIELD_ORDER);
+        (rx, ry) = ((xx * yx - xy * yy) % FIELD_MODULUS, (xx * yy + xy * yx) % FIELD_MODULUS);
     }
     
     function _FQ2Muc(uint256 xx, uint256 xy, uint256 c) constant returns(uint256 rx, uint256 ry) {
-        (rx, ry) = ((xx * c) % FIELD_ORDER, (xy * c) % FIELD_ORDER);
+        (rx, ry) = ((xx * c) % FIELD_MODULUS, (xy * c) % FIELD_MODULUS);
     }
     
     function _FQ2Add(uint256 xx, uint256 xy, uint256 yx, uint256 yy) constant returns(uint256 rx, uint256 ry) {
-        (rx, ry) = ((xx + yx) % FIELD_ORDER, (xy + yy) % FIELD_ORDER);
+        (rx, ry) = ((xx + yx) % FIELD_MODULUS, (xy + yy) % FIELD_MODULUS);
     }
     
     function _FQ2Sub(uint256 xx, uint256 xy, uint256 yx, uint256 yy) constant returns(uint256 rx, uint256 ry) {
-        (rx, ry) = ((xx - yx) % FIELD_ORDER, (xy - yy) % FIELD_ORDER);
+        (rx, ry) = ((xx - yx) % FIELD_MODULUS, (xy - yy) % FIELD_MODULUS);
     }
 
     function ECAdd(uint256 pt1xx, uint256 pt1xy, uint256 pt1yx, uint256 pt1yy, uint256 pt1zx, uint256 pt1zy, uint256 pt2xx, uint256 pt2xy, uint256 pt2yx, uint256 pt2yy, uint256 pt2zx, uint256 pt2zy) constant returns (uint256[6] pt3) {
