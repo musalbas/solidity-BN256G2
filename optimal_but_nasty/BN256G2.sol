@@ -1,4 +1,4 @@
-library bn256g2 {
+library BN256G2 {
     uint256 internal constant FIELD_MODULUS = 0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47;
     uint internal constant PT1XX = 0;
     uint internal constant PT1XY = 1;
