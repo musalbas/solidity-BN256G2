@@ -12,7 +12,7 @@ library BN256G2 {
     }
     
     function _FQ2Mul(uint256 xx, uint256 xy, uint256 c) constant returns(uint256 rx, uint256 ry) {
-        (rx, ry) = ((xx * c) % FIELD_MODULUS, (xy * c) % FIELD_MODULUS);
+        (rx, ry) = (mulmod(xx, c, FIELD_MODULUS), mulmod(xy, c, FIELD_MODULUS));
     }
     
     function _FQ2Add(uint256 xx, uint256 xy, uint256 yx, uint256 yy) constant returns(uint256 rx, uint256 ry) {
@@ -21,6 +21,89 @@ library BN256G2 {
     
     function _FQ2Sub(uint256 xx, uint256 xy, uint256 yx, uint256 yy) constant returns(uint256 rx, uint256 ry) {
         (rx, ry) = ((xx - yx) % FIELD_MODULUS, (xy - yy) % FIELD_MODULUS);
+    }
+    
+    function _FQ2Inv(uint256 low0, uint256 low1) constant returns(uint256 lm0, uint256 lm1) {
+        lm0 = 1;
+        lm1 = 0;
+        uint256 lm2 = 0;
+        uint256 hm0 = 0;
+        uint256 hm1 = 0;
+        uint256 hm2 = 0;
+        uint256 low2 = 0;
+        uint256 high0 = 1;
+        uint256 high1 = 0;
+        uint256 high2 = 1;
+        uint256 r0;
+        uint256 r1;
+        uint256 r2;
+        while (low1 != 0 && low2 != 0) {
+            // r = poly_rounded_div(high, low)
+            if (high2 != 0 && low1 == 0 && low2 == 0) { // dega = 2, degb = 0
+                low0 = _prime_field_inv(low0);
+                r2 = mulmod(high2, low0, FIELD_MODULUS);
+                r1 = mulmod(high1, low0, FIELD_MODULUS);
+                r0 = mulmod(high0, low0, FIELD_MODULUS);
+            } else if (high2 != 0 && low1 != 0 && low2 == 0) { // dega = 2, degb = 1
+                low1 = _prime_field_inv(low1);
+                r2 = 0;
+                r1 = mulmod(high2, low1, FIELD_MODULUS);
+                r0 = mulmod(high1, low1, FIELD_MODULUS);
+            } else if (high1 != 0 && high2 == 0 && low1 == 0 && low2 == 0) { // dega = 1, degb = 0
+                low0 = _prime_field_inv(low0);
+                r2 = 0;
+                r1 = mulmod(high1, low0, FIELD_MODULUS);
+                r0 = mulmod(high0, low0, FIELD_MODULUS);
+            } else if (high2 != 0 && low2 != 0) { // dega = 2, degb = 2
+                low2 = _prime_field_inv(low2);
+                r2 = 0;
+                r1 = 0;
+                r0 = mulmod(high2, low2, FIELD_MODULUS);
+            } else if (high1 != 0 && high2 == 0 && low1 != 0 && low2 == 0) { // dega = 1, degb = 1
+                low1 = _prime_field_inv(low1);
+                r2 = 0;
+                r1 = 0;
+                r0 = mulmod(high1, low1, FIELD_MODULUS);
+            } else if (high1 == 0 && high2 == 0 && low1 == 0 && low2 == 0) { // dega = 0, degb = 0
+                low0 = _prime_field_inv(low0);
+                r2 = 0;
+                r1 = 0;
+                r0 = mulmod(high0, low0, FIELD_MODULUS);
+            }
+            
+            hm0 -= lm0 * r0;
+            hm1 -= lm0 * r1 - lm1 * r0;
+            hm2 -= lm0 * r2 - lm1 * r1 - lm2 * r0;
+            high0 -= low0 * r0;
+            high1 -= low0 * r1;
+            high1 -= low1 * r0;
+            high2 -= low0 * r2;
+            high2 -= low1 * r1 - low2 * r0;
+            (lm0, hm0) = (hm0 % FIELD_MODULUS, lm0);
+            (lm1, hm1) = (hm1 % FIELD_MODULUS, lm1);
+            (lm2, hm2) = (hm2 % FIELD_MODULUS, lm2);
+            (low2, high2) = (high2 % FIELD_MODULUS, low2);
+            (low1, high1) = (high1 % FIELD_MODULUS, low1);
+            r0 = low0;
+            low0 = high0 % FIELD_MODULUS;
+            high0 = r0;
+        }
+        
+        lm0 = lm0 * _prime_field_inv(low0);
+        lm1 = lm1 * _prime_field_inv(low1);
+    }
+    
+    function _prime_field_inv(uint256 a) constant returns(uint256 t) {
+        t = 0;
+        uint256 newt = 1;
+        uint256 r = FIELD_MODULUS;
+        uint256 newr = a;
+        uint256 q;
+        while (newr != 0) {
+            q = r / newr;
+            (t, newt) = (newt, (t + (FIELD_MODULUS - mulmod(q, newt, FIELD_MODULUS))) % FIELD_MODULUS);
+            (r, newr) = (newr, r - q * newr);
+        }
     }
 
     function ECAdd(uint256 pt1xx, uint256 pt1xy, uint256 pt1yx, uint256 pt1yy, uint256 pt1zx, uint256 pt1zy, uint256 pt2xx, uint256 pt2xy, uint256 pt2yx, uint256 pt2yy, uint256 pt2zx, uint256 pt2zy) constant returns (uint256[6] pt3) {
