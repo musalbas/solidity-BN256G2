@@ -40,35 +40,35 @@ library BN256G2 {
         while (low1 != 0 && low2 != 0) {
             // r = poly_rounded_div(high, low)
             if (high2 != 0 && low1 == 0 && low2 == 0) { // dega = 2, degb = 0
-                low0 = _prime_field_inv(low0);
-                r2 = mulmod(high2, low0, FIELD_MODULUS);
-                r1 = mulmod(high1, low0, FIELD_MODULUS);
-                r0 = mulmod(high0, low0, FIELD_MODULUS);
+                r0 = _prime_field_inv(low0);
+                r2 = mulmod(high2, r0, FIELD_MODULUS);
+                r1 = mulmod(high1, r0, FIELD_MODULUS);
+                r0 = mulmod(high0, r0, FIELD_MODULUS);
             } else if (high2 != 0 && low1 != 0 && low2 == 0) { // dega = 2, degb = 1
-                low1 = _prime_field_inv(low1);
+                r0 = _prime_field_inv(low1);
                 r2 = 0;
-                r1 = mulmod(high2, low1, FIELD_MODULUS);
-                r0 = mulmod(high1, low1, FIELD_MODULUS);
+                r1 = mulmod(high2, r0, FIELD_MODULUS);
+                r0 = mulmod(high1, r0, FIELD_MODULUS);
             } else if (high1 != 0 && high2 == 0 && low1 == 0 && low2 == 0) { // dega = 1, degb = 0
-                low0 = _prime_field_inv(low0);
+                r0 = _prime_field_inv(low0);
                 r2 = 0;
-                r1 = mulmod(high1, low0, FIELD_MODULUS);
-                r0 = mulmod(high0, low0, FIELD_MODULUS);
+                r1 = mulmod(high1, r0, FIELD_MODULUS);
+                r0 = mulmod(high0, r0, FIELD_MODULUS);
             } else if (high2 != 0 && low2 != 0) { // dega = 2, degb = 2
-                low2 = _prime_field_inv(low2);
+                r0 = _prime_field_inv(low2);
                 r2 = 0;
                 r1 = 0;
-                r0 = mulmod(high2, low2, FIELD_MODULUS);
+                r0 = mulmod(high2, r0, FIELD_MODULUS);
             } else if (high1 != 0 && high2 == 0 && low1 != 0 && low2 == 0) { // dega = 1, degb = 1
-                low1 = _prime_field_inv(low1);
+                r0 = _prime_field_inv(low1);
                 r2 = 0;
                 r1 = 0;
-                r0 = mulmod(high1, low1, FIELD_MODULUS);
+                r0 = mulmod(high1, r0, FIELD_MODULUS);
             } else if (high1 == 0 && high2 == 0 && low1 == 0 && low2 == 0) { // dega = 0, degb = 0
-                low0 = _prime_field_inv(low0);
+                r0 = _prime_field_inv(low0);
                 r2 = 0;
                 r1 = 0;
-                r0 = mulmod(high0, low0, FIELD_MODULUS);
+                r0 = mulmod(high0, r0, FIELD_MODULUS);
             }
             
             hm0 -= lm0 * r0;
