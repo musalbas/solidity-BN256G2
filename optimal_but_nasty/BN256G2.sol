@@ -7,20 +7,29 @@ library BN256G2 {
     uint internal constant PTZX = 4;
     uint internal constant PTZY = 5;
     
-    function _FQ2Mul(uint256 xx, uint256 xy, uint256 yx, uint256 yy) constant returns(uint256 rx, uint256 ry) {
-        (rx, ry) = ((xx * yx - xy * yy) % FIELD_MODULUS, (xx * yy + xy * yx) % FIELD_MODULUS);
+    function _submod(uint256 a, uint256 b, uint256 n) constant returns (uint256) {
+        (a, b) = (a % n, b % n);
+        if (a >= b) {
+            return (a - b) % n;
+        } else {
+            return n - (b - a);
+        }
     }
     
-    function _FQ2Mul(uint256 xx, uint256 xy, uint256 c) constant returns(uint256 rx, uint256 ry) {
+    function _FQ2Mul(uint256 xx, uint256 xy, uint256 yx, uint256 yy) constant returns(uint256 rx, uint256 ry) {
+        (rx, ry) = (_submod(mulmod(xx, yx, FIELD_MODULUS), mulmod(xy, yy, FIELD_MODULUS), FIELD_MODULUS), addmod(mulmod(xx, yy, FIELD_MODULUS), mulmod(xy, yx, FIELD_MODULUS), FIELD_MODULUS));
+    }
+    
+    function _FQ2Mulc(uint256 xx, uint256 xy, uint256 c) constant returns(uint256 rx, uint256 ry) {
         (rx, ry) = (mulmod(xx, c, FIELD_MODULUS), mulmod(xy, c, FIELD_MODULUS));
     }
     
     function _FQ2Add(uint256 xx, uint256 xy, uint256 yx, uint256 yy) constant returns(uint256 rx, uint256 ry) {
-        (rx, ry) = ((xx + yx) % FIELD_MODULUS, (xy + yy) % FIELD_MODULUS);
+        (rx, ry) = (addmod(xx, yx, FIELD_MODULUS), addmod(xy, yy, FIELD_MODULUS));
     }
     
     function _FQ2Sub(uint256 xx, uint256 xy, uint256 yx, uint256 yy) constant returns(uint256 rx, uint256 ry) {
-        (rx, ry) = ((xx - yx) % FIELD_MODULUS, (xy - yy) % FIELD_MODULUS);
+        (rx, ry) = (_submod(xx, yx, FIELD_MODULUS), _submod(xy, yy, FIELD_MODULUS));
     }
     
     function _FQ2Inv(uint256 low0, uint256 low1) constant returns(uint256 lm0, uint256 lm1) {
@@ -128,7 +137,7 @@ library BN256G2 {
             (pt2xx, pt2xy) = _FQ2Mul(pt1xx, pt1xy, pt1xx, pt1xy);
             (pt2xx, pt2xy) = _FQ2Mul(pt2xx, pt2xy, pt2zx, pt2zy);
             (pt2xx, pt2xy) = _FQ2Sub(pt2xx, pt2xy, pt1zx, pt1zx);
-            (pt2zx, pt2zy) = _FQ2Mul(pt2yx, pt2yy, 2);
+            (pt2zx, pt2zy) = _FQ2Mulc(pt2yx, pt2yy, 2);
             (pt2xx, pt2xy) = _FQ2Sub(pt2xx, pt2xy, pt2zx, pt2zy); // A
             (pt3[PTXX], pt3[PTXY]) = _FQ2Mul(pt1yx, pt1yy, pt2xx, pt2xy);
             (pt1yx, pt1yy) = _FQ2Sub(pt2yx, pt2yy, pt2xx, pt2xy);
@@ -139,26 +148,26 @@ library BN256G2 {
     }
     
     function ECDouble(uint256 pt1xx, uint256 pt1xy, uint256 pt1yx, uint256 pt1yy, uint256 pt1zx, uint256 pt1zy) constant returns(uint256 pt2xx, uint256 pt2xy, uint256 pt2yx, uint256 pt2yy, uint256 pt2zx, uint256 pt2zy) {
-        (pt2xx, pt2xy) = _FQ2Mul(pt1xx, pt1xy, 3);
-        (pt2xx, pt2xy) = _FQ2Mul(pt2xx, pt2xy, pt2xx, pt2xy); // W
-        (pt1zx, pt1zy) = _FQ2Mul(pt1yx, pt1yy, pt1zx, pt1zy); // S
-        (pt2yx, pt2yy) = _FQ2Mul(pt1xx, pt1xy, pt1yx, pt1yy);
-        (pt2yx, pt2yy) = _FQ2Mul(pt2yx, pt2yy, pt1zx, pt1zy); // B
-        (pt1xx, pt1xy) = _FQ2Mul(pt2xx, pt2xy, pt2xx, pt2xy);
-        (pt2zx, pt2zy) = _FQ2Mul(pt2yx, pt2yy, 8);
-        (pt1xx, pt1xy) = _FQ2Sub(pt1xx, pt1xy, pt2zx, pt2zy); // H
-        (pt2zx, pt2zy) = _FQ2Mul(pt1zx, pt1zy, pt1zx, pt1zy); // S_squared
-        (pt2yx, pt2yy) = _FQ2Mul(pt2yx, pt2yy, 4); // 4 * B
+        (pt2xx, pt2xy) = _FQ2Mulc(pt1xx, pt1xy, 3); // 3 * x
+        (pt2xx, pt2xy) = _FQ2Mul(pt2xx, pt2xy, pt1xx, pt1xy); // W = 3 * x * x
+        (pt1zx, pt1zy) = _FQ2Mul(pt1yx, pt1yy, pt1zx, pt1zy); // S = y * z
+        (pt2yx, pt2yy) = _FQ2Mul(pt1xx, pt1xy, pt1yx, pt1yy); // x * y
+        (pt2yx, pt2yy) = _FQ2Mul(pt2yx, pt2yy, pt1zx, pt1zy); // B = x * y * S
+        (pt1xx, pt1xy) = _FQ2Mul(pt2xx, pt2xy, pt2xx, pt2xy); // W * W
+        (pt2zx, pt2zy) = _FQ2Mulc(pt2yx, pt2yy, 8); // 8 * B
+        (pt1xx, pt1xy) = _FQ2Sub(pt1xx, pt1xy, pt2zx, pt2zy); // H = W * W - 8 * B
+        (pt2zx, pt2zy) = _FQ2Mul(pt1zx, pt1zy, pt1zx, pt1zy); // S_squared = S * S
+        (pt2yx, pt2yy) = _FQ2Mulc(pt2yx, pt2yy, 4); // 4 * B
         (pt2yx, pt2yy) = _FQ2Sub(pt2yx, pt2yy, pt1xx, pt1xy); // 4 * B - H
         (pt2yx, pt2yy) = _FQ2Mul(pt2yx, pt2yy, pt2xx, pt2xy); // W * (4 * B - H)
-        (pt2xx, pt2xy) = _FQ2Mul(pt1yx, pt1yy, 8); // 8 * Y
-        (pt2xx, pt2xy) = _FQ2Mul(pt2xx, pt2xy, pt1yx, pt1yy); // 8 * Y * Y
+        (pt2xx, pt2xy) = _FQ2Mulc(pt1yx, pt1yy, 8); // 8 * y
+        (pt2xx, pt2xy) = _FQ2Mul(pt2xx, pt2xy, pt1yx, pt1yy); // 8 * y * y
         (pt2xx, pt2xy) = _FQ2Mul(pt2xx, pt2xy, pt2zx, pt2zy); // 8 * y * y * S_squared
-        (pt2yx, pt2yy) = _FQ2Sub(pt2yx, pt2yy, pt2xx, pt2xy); // newy
-        (pt2xx, pt2xy) = _FQ2Mul(pt1xx, pt1xy, 2); // 2 * H
-        (pt2xx, pt2xy) = _FQ2Mul(pt2xx, pt2xy, pt1zx, pt1zy); // newx
-        (pt2zx, pt2zy) = _FQ2Mul(pt1zx, pt1zy, pt2zx, pt2zy);
-        (pt2zx, pt2zy) = _FQ2Mul(pt2zx, pt2zy, 8); // newz
+        (pt2yx, pt2yy) = _FQ2Sub(pt2yx, pt2yy, pt2xx, pt2xy); // newy = W * (4 * B - H) - 8 * y * y * S_squared
+        (pt2xx, pt2xy) = _FQ2Mulc(pt1xx, pt1xy, 2); // 2 * H
+        (pt2xx, pt2xy) = _FQ2Mul(pt2xx, pt2xy, pt1zx, pt1zy); // newx = 2 * H * S
+        (pt2zx, pt2zy) = _FQ2Mul(pt1zx, pt1zy, pt2zx, pt2zy); // S * S_squared
+        (pt2zx, pt2zy) = _FQ2Mulc(pt2zx, pt2zy, 8); // newz = 8 * S * S_squared
     }
     
     function ECMul(uint256 d, uint256 pt1xx, uint256 pt1xy, uint256 pt1yx, uint256 pt1yy, uint256 pt1zx, uint256 pt1zy) constant returns(uint256[6] pt2) {
