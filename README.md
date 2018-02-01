@@ -46,17 +46,5 @@ function ECMul(
 ) public pure returns (
     uint256, uint256,
     uint256, uint256
-) {
-    uint256[6] memory pt2 = _ECTwistMulJacobian(
-        s,
-        pt1xx, pt1xy,
-        pt1yx, pt1yy,
-        1,     0
-    );
-    return _fromJacobian(
-        pt2[PTXX], pt2[PTXY],
-        pt2[PTYX], pt2[PTYY],
-        pt2[PTZX], pt2[PTZY]
-    );
-}
+)
 ```
