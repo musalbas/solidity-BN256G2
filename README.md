@@ -3,7 +3,7 @@ Implementation of elliptic curve operations on G2 for alt_bn128 in Solidity.
 
 # Functions
 
-## ECAdd
+## ECTwistAdd
 ```
 /**
  * @notice Add two twist points
@@ -17,7 +17,7 @@ Implementation of elliptic curve operations on G2 for alt_bn128 in Solidity.
  * @param pt2yy Coefficient 2 of y on point 2
  * @return (pt3xx, pt3xy, pt3yx, pt3yy)
  */
-function ECAdd(
+function ECTwistAdd(
     uint256 pt1xx, uint256 pt1xy,
     uint256 pt1yx, uint256 pt1yy,
     uint256 pt2xx, uint256 pt2xy,
@@ -28,7 +28,7 @@ function ECAdd(
 )
 ```
 
-## ECMul
+## ECTwistMul
 ```
 /**
  * @notice Multiply a twist point by a scalar
@@ -39,7 +39,7 @@ function ECAdd(
  * @param pt1yy Coefficient 2 of y
  * @return (pt2xx, pt2xy, pt2yx, pt2yy)
  */
-function ECMul(
+function ECTwistMul(
     uint256 s,
     uint256 pt1xx, uint256 pt1xy,
     uint256 pt1yx, uint256 pt1yy
