@@ -25,7 +25,7 @@ library BN256G2 {
      * @param pt2yy Coefficient 2 of y on point 2
      * @return (pt3xx, pt3xy, pt3yx, pt3yy)
      */
-    function ECAdd(
+    function ECTwistAdd(
         uint256 pt1xx, uint256 pt1xy,
         uint256 pt1yx, uint256 pt1yy,
         uint256 pt2xx, uint256 pt2xy,
@@ -58,7 +58,7 @@ library BN256G2 {
      * @param pt1yy Coefficient 2 of y
      * @return (pt2xx, pt2xy, pt2yx, pt2yy)
      */
-    function ECMul(
+    function ECTwistMul(
         uint256 s,
         uint256 pt1xx, uint256 pt1xy,
         uint256 pt1yx, uint256 pt1yy
