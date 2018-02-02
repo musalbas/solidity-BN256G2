@@ -4,7 +4,7 @@ Implementation of elliptic curve operations on G2 for alt_bn128 in Solidity.
 # Functions
 
 ## ECTwistAdd
-```
+```Solidity
 /**
  * @notice Add two twist points
  * @param pt1xx Coefficient 1 of x on point 1
@@ -29,7 +29,7 @@ function ECTwistAdd(
 ```
 
 ## ECTwistMul
-```
+```Solidity
 /**
  * @notice Multiply a twist point by a scalar
  * @param s     Scalar to multiply by
