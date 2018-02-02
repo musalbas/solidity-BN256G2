@@ -314,7 +314,6 @@ library BN256G2 {
                 pt1yx, pt1yy,
                 pt1zx, pt1zy
             );
-
             d = d / 2;
         }
     }
