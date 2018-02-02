@@ -1,6 +1,6 @@
 pragma solidity ^0.4.19;
 
-/*
+/**
  * @title Elliptic curve operations on twist points for alt_bn128
  * @author Mustafa Al-Bassam (mus@musalbas.com)
  */
