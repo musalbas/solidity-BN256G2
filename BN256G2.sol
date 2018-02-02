@@ -12,7 +12,7 @@ library BN256G2 {
     uint internal constant PTYY = 3;
     uint internal constant PTZX = 4;
     uint internal constant PTZY = 5;
-    
+
     /**
      * @notice Add two twist points
      * @param pt1xx Coefficient 1 of x on point 1
@@ -48,7 +48,7 @@ library BN256G2 {
             pt3[PTZX], pt3[PTZY]
         );
     }
-    
+
     /**
      * @notice Multiply a twist point by a scalar
      * @param s     Scalar to multiply by
@@ -151,7 +151,7 @@ library BN256G2 {
             (r, newR) = (newR, r - q * newR);
         }
     }
-    
+
     function _toJacobian(
         uint256 pt1xx, uint256 pt1xy,
         uint256 pt1yx, uint256 pt1yy
@@ -166,7 +166,7 @@ library BN256G2 {
             1,     0
         );
     }
-    
+
     function _fromJacobian(
         uint256 pt1xx, uint256 pt1xy,
         uint256 pt1yx, uint256 pt1yy,
@@ -295,21 +295,8 @@ library BN256G2 {
         uint256 pt1yx, uint256 pt1yy,
         uint256 pt1zx, uint256 pt1zy
     ) internal pure returns(uint256[6] pt2) {
-        bytes32 b = bytes32(d);
-        uint n;
         while (d != 0) {
-            if (pt2[PTZX] != 0 || pt2[PTZY] != 0) {
-                (
-                    pt2[PTXX], pt2[PTXY],
-                    pt2[PTYX], pt2[PTYY],
-                    pt2[PTZX], pt2[PTZY]
-                ) = _ECTwistDoubleJacobian(
-                    pt2[PTXX], pt2[PTXY],
-                    pt2[PTYX], pt2[PTYY],
-                    pt2[PTZX], pt2[PTZY]
-                );
-            }
-            if ((b[n / 8] >> (7 - (n % 8))) & 1 != 0) {
+            if ((d & 1) != 0) {
                 pt2 = _ECTwistAddJacobian(
                     pt2[PTXX], pt2[PTXY],
                     pt2[PTYX], pt2[PTYY],
@@ -318,10 +305,17 @@ library BN256G2 {
                     pt1yx, pt1yy,
                     pt1zx, pt1zy);
             }
-            if (pt2[PTZX] != 0 || pt2[PTZY] != 0) {
-                d = d / 2;
-            }
-            n += 1;
+            (
+                pt1xx, pt1xy,
+                pt1yx, pt1yy,
+                pt1zx, pt1zy
+            ) = _ECTwistDoubleJacobian(
+                pt1xx, pt1xy,
+                pt1yx, pt1yy,
+                pt1zx, pt1zy
+            );
+
+            d = d / 2;
         }
     }
 }
