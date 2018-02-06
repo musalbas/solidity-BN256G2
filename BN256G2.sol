@@ -79,6 +79,14 @@ library BN256G2 {
         );
     }
 
+    /**
+     * @notice Get the field modulus
+     * @return The field modulus
+     */
+    function GetFieldModulus() public pure returns (uint256) {
+        return FIELD_MODULUS;
+    }
+
     function submod(uint256 a, uint256 b, uint256 n) internal pure returns (uint256) {
         return addmod(a, n - b, n);
     }
@@ -314,6 +322,7 @@ library BN256G2 {
                 pt1yx, pt1yy,
                 pt1zx, pt1zy
             );
+
             d = d / 2;
         }
     }
