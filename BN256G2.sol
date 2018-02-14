@@ -6,6 +6,8 @@ pragma solidity ^0.4.19;
  */
 library BN256G2 {
     uint256 internal constant FIELD_MODULUS = 0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47;
+    uint256 internal constant TWISTBX = 0x9713b03af0fed4cd2cafadeed8fdf4a74fa084e52d1852e4a2bd0685c315d2;
+    uint256 internal constant TWISTBY = 0x2b149d40ceb8aaae81be18991be06ac3b5b4c5e559dbefa33267e6dc24a138e5;
     uint internal constant PTXX = 0;
     uint internal constant PTXY = 1;
     uint internal constant PTYX = 2;
@@ -34,6 +36,11 @@ library BN256G2 {
         uint256, uint256,
         uint256, uint256
     ) {
+        assert(_isOnCurve(
+            pt1xx, pt1xy,
+            pt1yx, pt1yy
+        ));
+
         uint256[6] memory pt3 = _ECTwistAddJacobian(
             pt1xx, pt1xy,
             pt1yx, pt1yy,
@@ -42,6 +49,7 @@ library BN256G2 {
             pt2yx, pt2yy,
             1,     0
         );
+
         return _fromJacobian(
             pt3[PTXX], pt3[PTXY],
             pt3[PTYX], pt3[PTYY],
@@ -66,12 +74,18 @@ library BN256G2 {
         uint256, uint256,
         uint256, uint256
     ) {
+        assert(_isOnCurve(
+            pt1xx, pt1xy,
+            pt1yx, pt1yy
+        ));
+
         uint256[6] memory pt2 = _ECTwistMulJacobian(
             s,
             pt1xx, pt1xy,
             pt1yx, pt1yy,
             1,     0
         );
+
         return _fromJacobian(
             pt2[PTXX], pt2[PTXY],
             pt2[PTYX], pt2[PTYY],
@@ -145,6 +159,22 @@ library BN256G2 {
             mulmod(x, inv, FIELD_MODULUS),
             FIELD_MODULUS - mulmod(y, inv, FIELD_MODULUS)
         );
+    }
+
+    function _isOnCurve(
+        uint256 xx, uint256 xy,
+        uint256 yx, uint256 yy
+    ) internal pure returns (bool) {
+        uint256 yyx;
+        uint256 yyy;
+        uint256 xxxx;
+        uint256 xxxy;
+        (yyx, yyy) = _FQ2Mul(yx, yy, yx, yy);
+        (xxxx, xxxy) = _FQ2Mul(xx, xy, xx, xy);
+        (xxxx, xxxy) = _FQ2Mul(xxxx, xxxy, xx, xy);
+        (yyx, yyy) = _FQ2Sub(yyx, yyy, xxxx, xxxy);
+        (yyx, yyy) = _FQ2Sub(yyx, yyy, TWISTBX, TWISTBY);
+        return yyx == 0 && yyy == 0;
     }
 
     function _modInv(uint256 a, uint256 n) internal pure returns(uint256 t) {
