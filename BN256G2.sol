@@ -115,7 +115,7 @@ library BN256G2 {
             s,
             pt1xx, pt1xy,
             pt1yx, pt1yy,
-            zx,     0
+            zx,    0
         );
 
         return _fromJacobian(
