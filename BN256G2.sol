@@ -96,14 +96,14 @@ library BN256G2 {
         uint256, uint256,
         uint256, uint256
     ) {
-        uint256 zx = 1;
+        uint256 pt1zx = 1;
         if (
             pt1xx == 0 && pt1xy == 0 &&
             pt1yx == 0 && pt1yy == 0
         ) {
             pt1xx = 1;
             pt1yx = 1;
-            zx = 0;
+            pt1zx = 0;
         } else {
             assert(_isOnCurve(
                 pt1xx, pt1xy,
@@ -115,7 +115,7 @@ library BN256G2 {
             s,
             pt1xx, pt1xy,
             pt1yx, pt1yy,
-            zx,    0
+            pt1zx, 0
         );
 
         return _fromJacobian(
