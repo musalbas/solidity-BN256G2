@@ -104,7 +104,7 @@ class TestBN256G2(unittest.TestCase):
         self.assertFalse(is_inf(multiply(G2, 2 * FIELD_MODULUS - CURVE_ORDER)))
         self.assertTrue(is_inf(add(multiply(G2, CURVE_ORDER), multiply(G2, CURVE_ORDER))))
         self.assertTrue(eq(add(multiply(G2, CURVE_ORDER), multiply(G2, 5)), multiply(G2, 5)))
-        self.assertTrue(eq(multiply(G2, 5), add(multiply(G2, CURVE_ORDER), multiply(G2, 5))))
+        self.assertTrue(eq(add(multiply(G2, 5), multiply(G2, CURVE_ORDER)), multiply(G2, 5)))
         self.assertTrue(is_inf(multiply(multiply(G2, CURVE_ORDER), 1)))
         self.assertTrue(is_inf(multiply(multiply(G2, CURVE_ORDER), 2)))
 
@@ -116,7 +116,7 @@ class TestBN256G2(unittest.TestCase):
         self.assertTrue(is_on_curve(multiply(G2, 9)))
         self.assertTrue(is_inf(add(multiply(G2, CURVE_ORDER), multiply(G2, CURVE_ORDER))))
         self.assertTrue(eq(add(multiply(G2, CURVE_ORDER), multiply(G2, 5)), multiply(G2, 5)))
-        self.assertTrue(eq(multiply(G2, 5), add(multiply(G2, CURVE_ORDER), multiply(G2, 5))))
+        self.assertTrue(eq(add(multiply(G2, 5), multiply(G2, CURVE_ORDER)), multiply(G2, 5)))
         self.assertTrue(is_inf(multiply(multiply(G2, CURVE_ORDER), 1)))
         self.assertTrue(is_inf(multiply(multiply(G2, CURVE_ORDER), 2)))
 
@@ -124,7 +124,13 @@ class TestBN256G2(unittest.TestCase):
         eq, add, multiply, is_inf, is_on_curve = self.contract.eq, self.contract.add, self.contract.multiply, contractWrapper.is_inf, self.contract.is_on_curve
         with self.assertRaises(tester.TransactionFailed) as e:
             add(multiply(G2, 9), ((1, 1), (1, 1)))
+        with self.assertRaises(tester.TransactionFailed) as e:
             add(((1, 1), (1, 1)), multiply(G2, 9))
+        with self.assertRaises(tester.TransactionFailed) as e:
+            add(((0, 0), (0, 0)), ((1, 1), (1, 1)))
+        with self.assertRaises(tester.TransactionFailed) as e:
+            add(((1, 1), (1, 1)), ((0, 0), (0, 0)))
+        with self.assertRaises(tester.TransactionFailed) as e:
             multiply(((1, 1), (1, 1)), 9)
 
 if __name__ == '__main__':

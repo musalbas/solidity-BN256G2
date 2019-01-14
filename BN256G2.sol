@@ -40,6 +40,15 @@ library BN256G2 {
             pt1xx == 0 && pt1xy == 0 &&
             pt1yx == 0 && pt1yy == 0
         ) {
+            if (!(
+                pt2xx == 0 && pt2xy == 0 &&
+                pt2yx == 0 && pt2yy == 0
+            )) {
+                assert(_isOnCurve(
+                    pt2xx, pt2xy,
+                    pt2yx, pt2yy
+                ));
+            }
             return (
                 pt2xx, pt2xy,
                 pt2yx, pt2yy
@@ -48,6 +57,10 @@ library BN256G2 {
             pt2xx == 0 && pt2xy == 0 &&
             pt2yx == 0 && pt2yy == 0
         ) {
+            assert(_isOnCurve(
+                pt1xx, pt1xy,
+                pt1yx, pt1yy
+            ));
             return (
                 pt1xx, pt1xy,
                 pt1yx, pt1yy
