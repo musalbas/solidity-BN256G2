@@ -40,6 +40,10 @@ library BN256G2 {
             pt1xx, pt1xy,
             pt1yx, pt1yy
         ));
+        assert(_isOnCurve(
+            pt2xx, pt2xy,
+            pt2yx, pt2yy
+        ));
 
         uint256[6] memory pt3 = _ECTwistAddJacobian(
             pt1xx, pt1xy,
