@@ -9,4 +9,4 @@ before_install:
   - pip install ethereum
 script:
   - solc
-  - pytest
+  - python test_BN256G2.py
