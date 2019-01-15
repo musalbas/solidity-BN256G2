@@ -1,0 +1,11 @@
+dist: xenial
+language: python
+python:
+  - "3.6"
+before_install:
+  - sudo add-apt-repository ppa:ethereum/ethereum -y
+  - sudo apt update
+  - sudo apt install solc
+  - pip install ethereum
+script:
+  - pytest
