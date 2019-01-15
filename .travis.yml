@@ -8,5 +8,4 @@ before_install:
   - sudo apt install solc -y
   - pip install ethereum
 script:
-  - solc
   - python test_BN256G2.py
