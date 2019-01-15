@@ -54,5 +54,5 @@ function ECTwistMul(
 # Gas costs
 Function   | Gas cost
 -----------|---------
-ECTwistAdd | 32,595
+ECTwistAdd | ~50,000
 ECTwistMul | ~2,000,000 for a 256-bit scalar
