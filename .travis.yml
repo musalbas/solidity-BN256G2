@@ -8,4 +8,5 @@ before_install:
   - sudo apt install solc -y
   - pip install ethereum
 script:
-  - SOLC_BINARY="`which solc`" pytest
+  - export SOLC_BINARY="`which solc`"
+  - pytest
