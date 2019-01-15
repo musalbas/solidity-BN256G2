@@ -6,7 +6,6 @@ before_install:
   - sudo add-apt-repository ppa:ethereum/ethereum -y
   - sudo apt update
   - sudo apt install solc -y
-  - which solc
   - pip install ethereum
 script:
-  - pytest
+  - SOLC_BINARY="`which solc`" pytest
