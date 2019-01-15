@@ -1,6 +1,8 @@
 # solidity-BN256G2
 Implementation of elliptic curve operations on G2 for alt_bn128 in Solidity.
 
+[![Build Status](https://travis-ci.org/musalbas/solidity-BN256G2.svg?branch=master)](https://travis-ci.org/musalbas/solidity-BN256G2)
+
 # Functions
 
 ## ECTwistAdd
