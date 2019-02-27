@@ -256,7 +256,7 @@ library BN256G2 {
         uint256 pt1zx, uint256 pt1zy,
         uint256 pt2xx, uint256 pt2xy,
         uint256 pt2yx, uint256 pt2yy,
-        uint256 pt2zx, uint256 pt2zy) internal pure returns (uint256[6] pt3) {
+        uint256 pt2zx, uint256 pt2zy) internal pure returns (uint256[6] memory pt3) {
             if (pt1zx == 0 && pt1zy == 0) {
                 (
                     pt3[PTXX], pt3[PTXY],
@@ -267,7 +267,7 @@ library BN256G2 {
                     pt2yx, pt2yy,
                     pt2zx, pt2zy
                 );
-                return;
+                return pt3;
             } else if (pt2zx == 0 && pt2zy == 0) {
                 (
                     pt3[PTXX], pt3[PTXY],
@@ -278,7 +278,7 @@ library BN256G2 {
                     pt1yx, pt1yy,
                     pt1zx, pt1zy
                 );
-                return;
+                return pt3;
             }
 
             (pt2yx,     pt2yy)     = _FQ2Mul(pt2yx, pt2yy, pt1zx, pt1zy); // U1 = y2 * z1
@@ -293,7 +293,7 @@ library BN256G2 {
                         pt3[PTYX], pt3[PTYY],
                         pt3[PTZX], pt3[PTZY]
                     ) = _ECTwistDoubleJacobian(pt1xx, pt1xy, pt1yx, pt1yy, pt1zx, pt1zy);
-                    return;
+                    return pt3;
                 }
                 (
                     pt3[PTXX], pt3[PTXY],
@@ -304,7 +304,7 @@ library BN256G2 {
                     1, 0,
                     0, 0
                 );
-                return;
+                return pt3;
             }
 
             (pt2zx,     pt2zy)     = _FQ2Mul(pt1zx, pt1zy, pt2zx,     pt2zy);     // W = z1 * z2
@@ -362,7 +362,7 @@ library BN256G2 {
         uint256 pt1xx, uint256 pt1xy,
         uint256 pt1yx, uint256 pt1yy,
         uint256 pt1zx, uint256 pt1zy
-    ) internal pure returns(uint256[6] pt2) {
+    ) internal pure returns(uint256[6] memory pt2) {
         while (d != 0) {
             if ((d & 1) != 0) {
                 pt2 = _ECTwistAddJacobian(
