@@ -223,9 +223,7 @@ library BN256G2 {
         return yyx == 0 && yyy == 0;
     }
 
-    function _modInv(uint256 a, uint256 n)
-        public view returns (uint256 result)
-    {
+    function _modInv(uint256 a, uint256 n) internal view returns(uint256 result) {
         bool success;
         assembly {
             let freemem := mload(0x40)
