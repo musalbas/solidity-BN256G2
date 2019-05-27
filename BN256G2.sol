@@ -200,7 +200,7 @@ library BN256G2 {
     }
 
     function _FQ2Inv(uint256 x, uint256 y) internal view returns(uint256, uint256) {
-        uint256 inv = _modInvPrecompile(addmod(mulmod(y, y, FIELD_MODULUS), mulmod(x, x, FIELD_MODULUS), FIELD_MODULUS), FIELD_MODULUS);
+        uint256 inv = _modInv(addmod(mulmod(y, y, FIELD_MODULUS), mulmod(x, x, FIELD_MODULUS), FIELD_MODULUS), FIELD_MODULUS);
         return (
             mulmod(x, inv, FIELD_MODULUS),
             FIELD_MODULUS - mulmod(y, inv, FIELD_MODULUS)
@@ -223,11 +223,7 @@ library BN256G2 {
         return yyx == 0 && yyy == 0;
     }
 
-    /**
-     * This is about half as expensive has `_modInv` where `a` has with a high hamming weight
-     *  result = pow(a, n-2, n)
-     */
-    function _modInvPrecompile(uint256 a, uint256 n)
+    function _modInv(uint256 a, uint256 n)
         public view returns (uint256 result)
     {
         bool success;
