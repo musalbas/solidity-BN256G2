@@ -223,22 +223,8 @@ library BN256G2 {
         return yyx == 0 && yyy == 0;
     }
 
-    // function _modInv(uint256 a, uint256 n) internal pure returns(uint256 t) {
-    //     t = 0;
-    //     uint256 newT = 1;
-    //     uint256 r = n;
-    //     uint256 newR = a;
-    //     uint256 q;
-    //     while (newR != 0) {
-    //         q = r / newR;
-    //         (t, newT) = (newT, submod(t, mulmod(q, newT, n), n));
-    //         (r, newR) = (newR, r - q * newR);
-    //     }
-    // }
-
     /**
      * This is about half as expensive has `_modInv` where `a` has with a high hamming weight
-     * 
      *  result = pow(a, n-2, n)
      */
     function _modInvPrecompile(uint256 a, uint256 n)
