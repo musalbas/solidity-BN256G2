@@ -24,7 +24,7 @@ function ECTwistAdd(
     uint256 pt1yx, uint256 pt1yy,
     uint256 pt2xx, uint256 pt2xy,
     uint256 pt2yx, uint256 pt2yy
-) public pure returns (
+) public view returns (
     uint256, uint256,
     uint256, uint256
 )
@@ -45,7 +45,7 @@ function ECTwistMul(
     uint256 s,
     uint256 pt1xx, uint256 pt1xy,
     uint256 pt1yx, uint256 pt1yy
-) public pure returns (
+) public view returns (
     uint256, uint256,
     uint256, uint256
 )
@@ -54,5 +54,5 @@ function ECTwistMul(
 # Gas costs
 Function   | Gas cost
 -----------|---------
-ECTwistAdd | ~50,000
+ECTwistAdd | ~30,000
 ECTwistMul | ~2,000,000 for a 256-bit scalar
