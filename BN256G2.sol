@@ -3,6 +3,7 @@ pragma solidity ^0.4.24;
 /**
  * @title Elliptic curve operations on twist points for alt_bn128
  * @author Mustafa Al-Bassam (mus@musalbas.com)
+ * @dev Homepage: https://github.com/musalbas/solidity-BN256G2
  */
 
 library BN256G2 {
