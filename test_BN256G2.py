@@ -10,9 +10,18 @@ G2J = (
     (8495653923123431417604973247489272438418190587263600148770280649306958101930, 4082367875863433681332203403145435568316851327593401208105741076214120093531),
     (1, 0)
 )
+G2J_inf = (
+    (1, 0),
+    (1, 0),
+    (0, 0)
+)
 G2 = (
     (10857046999023057135944570762232829481370756359578518086990519993285655852781, 11559732032986387107991004021392285783925812861821192530917403151452391805634),
     (8495653923123431417604973247489272438418190587263600148770280649306958101930, 4082367875863433681332203403145435568316851327593401208105741076214120093531)
+)
+G2_inf = (
+    (0, 0),
+    (0, 0)
 )
 
 
@@ -107,6 +116,9 @@ class TestBN256G2(unittest.TestCase):
         self.assertTrue(eq(add(multiply(G2, 5), multiply(G2, CURVE_ORDER)), multiply(G2, 5)))
         self.assertTrue(is_inf(multiply(multiply(G2, CURVE_ORDER), 1)))
         self.assertTrue(is_inf(multiply(multiply(G2, CURVE_ORDER), 2)))
+        self.assertTrue(eq(G2J_inf, add(G2J_inf, G2J_inf)))
+        self.assertTrue(eq(G2J, add(G2J, G2J_inf)))
+        self.assertTrue(eq(G2J, add(G2J_inf, G2J)))
 
     def test_G2(self):
         eq, add, multiply, is_inf, is_on_curve = self.contract.eq, self.contract.add, self.contract.multiply, contractWrapper.is_inf, self.contract.is_on_curve
@@ -119,6 +131,9 @@ class TestBN256G2(unittest.TestCase):
         self.assertTrue(eq(add(multiply(G2, 5), multiply(G2, CURVE_ORDER)), multiply(G2, 5)))
         self.assertTrue(is_inf(multiply(multiply(G2, CURVE_ORDER), 1)))
         self.assertTrue(is_inf(multiply(multiply(G2, CURVE_ORDER), 2)))
+        self.assertTrue(eq(G2_inf, add(G2_inf, G2_inf)))
+        self.assertTrue(eq(G2, add(G2, G2_inf)))
+        self.assertTrue(eq(G2, add(G2_inf, G2)))
 
     def test_invalid_curves_G2(self):
         eq, add, multiply, is_inf, is_on_curve = self.contract.eq, self.contract.add, self.contract.multiply, contractWrapper.is_inf, self.contract.is_on_curve
