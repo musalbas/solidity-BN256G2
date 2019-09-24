@@ -35,8 +35,8 @@ library BN256G2 {
         uint256 pt2xx, uint256 pt2xy,
         uint256 pt2yx, uint256 pt2yy
     ) public view returns (
-        uint256, uint256,
-        uint256, uint256
+        uint256 pt3xx, uint256 pt3xy,
+        uint256 pt3yx, uint256 pt3yy
     ) {
         if (
             pt1xx == 0 && pt1xy == 0 &&
@@ -108,8 +108,8 @@ library BN256G2 {
         uint256 pt1xx, uint256 pt1xy,
         uint256 pt1yx, uint256 pt1yy
     ) public view returns (
-        uint256, uint256,
-        uint256, uint256
+        uint256 pt2xx, uint256 pt2xy,
+        uint256 pt2yx, uint256 pt2yy
     ) {
         uint256 pt1zx = 1;
         if (
@@ -144,12 +144,19 @@ library BN256G2 {
      * @notice Get the field modulus
      * @return The field modulus
      */
-    function GetFieldModulus() public pure returns (uint256) {
+    function GetFieldModulus() public pure returns (uint256 fieldModulus) {
         return FIELD_MODULUS;
     }
 
-    function submod(uint256 a, uint256 b, uint256 n) internal pure returns (uint256) {
-        return addmod(a, n - b, n);
+    /**
+     * @notice Perform modular subtraction
+     * @param minuend     Quantity to subtract from
+     * @param subtrahend  Quantity subtracted
+     * @param divisor     Base of modulation
+     * @return difference
+     */
+    function submod(uint256 minuend, uint256 subtrahend, uint256 divisor) internal pure returns (uint256 difference) {
+        return addmod(minuend, divisor - subtrahend, divisor);
     }
 
     function _FQ2Mul(
