@@ -1,6 +1,8 @@
 # solidity-BN256G2
 Implementation of elliptic curve operations on G2 for alt_bn128 in Solidity.
 
+Warning: this library has not been audited by a third party. If you want to use it in production, you are advised to arrange a third party audit.
+
 [![Build Status](https://travis-ci.org/musalbas/solidity-BN256G2.svg?branch=master)](https://travis-ci.org/musalbas/solidity-BN256G2)
 
 # Functions
